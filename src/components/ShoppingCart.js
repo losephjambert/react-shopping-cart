@@ -5,27 +5,26 @@ import Item from './ShoppingCartItem';
 
 // Contexts
 import CartContext from '../contexts/CartContext';
-import ProductContext from '../contexts/ProductContext';
 
 const ShoppingCart = () => {
-  const { cart } = useContext(CartContext);
-  const { removeItem } = useContext(ProductContext);
-  const getCartTotal = () => {
-    return cart
-      .reduce((acc, value) => {
-        return acc + value.price;
+  const { cartItems, removeItem, updateItemQuantity } = useContext(CartContext);
+
+  const cartTotal = () => {
+    return cartItems
+      .reduce((accumulatedPrice, currentCartItem) => {
+        return accumulatedPrice + currentCartItem.quantity * currentCartItem.price;
       }, 0)
       .toFixed(2);
   };
 
   return (
     <div className='shopping-cart'>
-      {cart.map((item, i) => (
-        <Item key={item.id + i} {...item} removeItem={removeItem} />
+      {cartItems.map((item, i) => (
+        <Item key={item.id + i} {...item} removeItem={removeItem} updateItemQuantity={updateItemQuantity} />
       ))}
 
       <div className='shopping-cart__checkout'>
-        <p>Total: ${getCartTotal()}</p>
+        <p>Total: ${cartTotal()}</p>
         <button>Checkout</button>
       </div>
     </div>
