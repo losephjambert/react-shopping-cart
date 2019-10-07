@@ -44,7 +44,7 @@ function App() {
     }
 
     // set the cartItems state with the new cloned cart items array
-    setCartItems([...clonedCartItems]);
+    setCartItems(clonedCartItems);
   };
 
   const removeItem = id => {
@@ -52,10 +52,28 @@ function App() {
     setCart(filteredCart);
   };
 
+  const updateItemQuantity = (id, quantity, quantityModifier) => {
+    const newQuantity = (quantity += quantityModifier);
+
+    if (newQuantity < 1) {
+      setCartItems([...cartItems.filter(c => c.id !== id)]);
+      return;
+    }
+    const clonedCartItems = [...cartItems];
+    let index;
+    clonedCartItems.find((c, i) => {
+      if (id === c.id) index = i;
+      return false;
+    });
+
+    clonedCartItems[index]['quantity'] = newQuantity;
+    setCartItems(clonedCartItems);
+  };
+
   return (
     <div className='App'>
-      <ProductContext.Provider value={{ products, addItem, removeItem }}>
-        <CartContext.Provider value={{ cart, cartItems }}>
+      <ProductContext.Provider value={{ products, addItem }}>
+        <CartContext.Provider value={{ cart, cartItems, removeItem, updateItemQuantity }}>
           <Navigation cart={cart} />
           {/* Routes */}
           <Route exact path='/' component={Products} />
