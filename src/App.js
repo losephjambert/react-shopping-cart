@@ -52,10 +52,8 @@ function App() {
     setCart(filteredCart);
   };
 
-  const updateItemQuantity = (id, quantity, quantityModifier) => {
-    const newQuantity = (quantity += quantityModifier);
-
-    if (newQuantity < 1) {
+  const updateItemQuantity = (id, quantity) => {
+    if (quantity < 1) {
       setCartItems([...cartItems.filter(c => c.id !== id)]);
       return;
     }
@@ -66,7 +64,7 @@ function App() {
       return false;
     });
 
-    clonedCartItems[index]['quantity'] = newQuantity;
+    clonedCartItems[index]['quantity'] = quantity;
     setCartItems(clonedCartItems);
   };
 
