@@ -13,13 +13,9 @@ import CartContext from './contexts/CartContext';
 
 function App() {
   const [products] = useState(data);
-  const [cart, setCart] = useState([]);
   const [cartItems, setCartItems] = useState([]);
 
   const addItem = item => {
-    // add the given item to the cart
-    setCart([...cart, item]);
-
     // make a clone of the current cart items
     // then check to see if @param: item is in the current cart
     let foundCartItemIndex;
@@ -48,8 +44,7 @@ function App() {
   };
 
   const removeItem = id => {
-    const filteredCart = cart.filter(item => item.id !== id);
-    setCart(filteredCart);
+    setCartItems([...cartItems.filter(c => c.id !== id)]);
   };
 
   const updateItemQuantity = (id, quantity) => {
@@ -71,8 +66,8 @@ function App() {
   return (
     <div className='App'>
       <ProductContext.Provider value={{ products, addItem }}>
-        <CartContext.Provider value={{ cart, cartItems, removeItem, updateItemQuantity }}>
-          <Navigation cart={cart} />
+        <CartContext.Provider value={{ cartItems, removeItem, updateItemQuantity }}>
+          <Navigation />
           {/* Routes */}
           <Route exact path='/' component={Products} />
           <Route path='/cart' component={ShoppingCart} />
