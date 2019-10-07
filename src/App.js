@@ -14,10 +14,28 @@ import CartContext from './contexts/CartContext';
 function App() {
   const [products] = useState(data);
   const [cart, setCart] = useState([]);
+  const [cartItems, setCartItems] = useState(new Map([]));
+
+  /**
+   * Shape of cartItems
+   *
+      [
+        {
+          id: n,
+          quantity: m
+        }
+      ]
+   */
 
   const addItem = item => {
     // add the given item to the cart
     setCart([...cart, item]);
+
+    if (cartItems.has(item.id)) {
+      setCartItems(prevCartItems => cartItems.set(item.id, prevCartItems.get(item.id) + 1));
+    } else {
+      setCartItems(cartItems.set(item.id, 1));
+    }
   };
 
   const removeItem = id => {
