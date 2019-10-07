@@ -14,28 +14,37 @@ import CartContext from './contexts/CartContext';
 function App() {
   const [products] = useState(data);
   const [cart, setCart] = useState([]);
-  const [cartItems, setCartItems] = useState(new Map([]));
-
-  /**
-   * Shape of cartItems
-   *
-      [
-        {
-          id: n,
-          quantity: m
-        }
-      ]
-   */
+  const [cartItems, setCartItems] = useState([]);
 
   const addItem = item => {
     // add the given item to the cart
     setCart([...cart, item]);
 
-    if (cartItems.has(item.id)) {
-      setCartItems(prevCartItems => cartItems.set(item.id, prevCartItems.get(item.id) + 1));
+    // make a clone of the current cart items
+    // then check to see if @param: item is in the current cart
+    let foundCartItemIndex;
+    const clonedCartItems = [...cartItems];
+    const foundCartItem = cartItems.find((c, i) => {
+      if (c.id === item.id) {
+        foundCartItemIndex = i;
+        return c;
+      } else return false;
+    });
+
+    // if @param:item is in the cloned cart increase its quantity by 1
+    // otherwise, make a clone of the @param:item with a new key of quantity = 1
+    // and push the cloned item into the cloned cart
+    if (foundCartItem) {
+      clonedCartItems[foundCartItemIndex]['quantity'] = foundCartItem.quantity + 1;
     } else {
-      setCartItems(cartItems.set(item.id, 1));
+      clonedCartItems.push({
+        ...item,
+        quantity: 1,
+      });
     }
+
+    // set the cartItems state with the new cloned cart items array
+    setCartItems([...clonedCartItems]);
   };
 
   const removeItem = id => {
@@ -46,7 +55,7 @@ function App() {
   return (
     <div className='App'>
       <ProductContext.Provider value={{ products, addItem, removeItem }}>
-        <CartContext.Provider value={{ cart }}>
+        <CartContext.Provider value={{ cart, cartItems }}>
           <Navigation cart={cart} />
           {/* Routes */}
           <Route exact path='/' component={Products} />
