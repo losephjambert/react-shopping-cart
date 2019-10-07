@@ -14,6 +14,23 @@ const Item = props => {
           }}>
           Remove from cart
         </button>
+        {props.quantity && (
+          <div>
+            <button
+              onClick={() => {
+                props.updateItemQuantity(props.id, props.quantity - 1);
+              }}>
+              - 1
+            </button>
+            <p>{props.quantity}</p>
+            <button
+              onClick={() => {
+                props.updateItemQuantity(props.id, props.quantity + 1);
+              }}>
+              + 1
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
