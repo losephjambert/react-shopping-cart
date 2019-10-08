@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
-import { Route } from 'react-router-dom';
-import data from './data';
+import React, { useState } from "react";
+import { Route } from "react-router-dom";
+import data from "./data";
 
 // Components
-import Navigation from './components/Navigation';
-import Products from './components/Products';
-import ShoppingCart from './components/ShoppingCart';
+import Navigation from "./components/Navigation";
+import Products from "./components/Products";
+import ShoppingCart from "./components/ShoppingCart";
 
 // Contexts
-import ProductContext from './contexts/ProductContext';
-import CartContext from './contexts/CartContext';
+import ProductContext from "./contexts/ProductContext";
+import CartContext from "./contexts/CartContext";
+
+// Hooks
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 function App() {
   const [products] = useState(data);
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useLocalStorage("cartItems", []);
 
   const addItem = item => {
     // make a clone of the current cart items
@@ -31,11 +34,12 @@ function App() {
     // otherwise, make a clone of the @param:item with a new key of quantity = 1
     // and push the cloned item into the cloned cart
     if (foundCartItem) {
-      clonedCartItems[foundCartItemIndex]['quantity'] = foundCartItem.quantity + 1;
+      clonedCartItems[foundCartItemIndex]["quantity"] =
+        foundCartItem.quantity + 1;
     } else {
       clonedCartItems.push({
         ...item,
-        quantity: 1,
+        quantity: 1
       });
     }
 
@@ -59,18 +63,20 @@ function App() {
       return false;
     });
 
-    clonedCartItems[index]['quantity'] = quantity;
+    clonedCartItems[index]["quantity"] = quantity;
     setCartItems(clonedCartItems);
   };
 
   return (
-    <div className='App'>
+    <div className="App">
       <ProductContext.Provider value={{ products, addItem }}>
-        <CartContext.Provider value={{ cartItems, removeItem, updateItemQuantity }}>
+        <CartContext.Provider
+          value={{ cartItems, removeItem, updateItemQuantity }}
+        >
           <Navigation />
           {/* Routes */}
-          <Route exact path='/' component={Products} />
-          <Route path='/cart' component={ShoppingCart} />
+          <Route exact path="/" component={Products} />
+          <Route path="/cart" component={ShoppingCart} />
         </CartContext.Provider>
       </ProductContext.Provider>
     </div>
