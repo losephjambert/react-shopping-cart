@@ -17,21 +17,9 @@ function App() {
 
   const addItem = item => {
     // add the given item to the cart
-    setCart(() => {
-      return [...cart, item].reduce((products, currentProduct) => {
-        products = products || [];
-        const product = products.find(p => p.id === currentProduct.id);
-        if (product) {
-          product.quantity = product.quantity ? (product.quantity += 1) : 1;
-          const filteredProducts = products.filter(p => p.id !== currentProduct.id);
-          products = [...filteredProducts, product];
-        } else {
-          currentProduct.quantity = 1;
-          products = [...products, currentProduct];
-        }
-        return products;
-      }, []);
-    });
+    item = cart.find(p => p.id === item.id) || item;
+    item.quantity ? (item.quantity += 1) : (item.quantity = 1);
+    setCart([...cart.filter(c => c.id !== item.id), item]);
   };
 
   return (
