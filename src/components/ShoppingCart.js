@@ -18,12 +18,12 @@ const ShoppingCart = () => {
 
   return (
     <div className='shopping-cart'>
-      {cart.map(item => (
-        <Item key={item.id} {...item} />
+      {cartItems.map(item => (
+        <Item key={item.id} {...item} removeItem={removeItem} updateItemQuantity={updateItemQuantity} />
       ))}
 
       <div className='shopping-cart__checkout'>
-        <p>Total: ${getCartTotal()}</p>
+        <p>Total: ${cartTotal()}</p>
         <button>Checkout</button>
       </div>
     </div>
