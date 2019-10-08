@@ -5,13 +5,15 @@ import { NavLink } from 'react-router-dom';
 import CartContext from '../contexts/CartContext';
 
 const Navigation = () => {
-  const { cartItems } = useContext(CartContext);
-  const total = cartItems.reduce((a, b) => a + b.quantity, 0);
+  const { cart } = useContext(CartContext);
+  const getTotalCartCount = () => {
+    return cart.reduce((a, b) => a + b.quantity, 0);
+  };
   return (
     <div className='navigation'>
       <NavLink to='/'>Products</NavLink>
       <NavLink to='/cart'>
-        Cart <span>{total}</span>
+        Cart <span>{getTotalCartCount()}</span>
       </NavLink>
     </div>
   );

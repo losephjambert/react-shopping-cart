@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 // Components
 import Item from './ShoppingCartItem';
@@ -7,24 +7,23 @@ import Item from './ShoppingCartItem';
 import CartContext from '../contexts/CartContext';
 
 const ShoppingCart = () => {
-  const { cartItems, removeItem, updateItemQuantity } = useContext(CartContext);
-
-  const cartTotal = () => {
-    return cartItems
-      .reduce((accumulatedPrice, currentCartItem) => {
-        return accumulatedPrice + currentCartItem.quantity * currentCartItem.price;
+  const { cart } = useContext(CartContext);
+  const getCartTotal = () => {
+    return cart
+      .reduce((acc, value) => {
+        return acc + value.price * value.quantity;
       }, 0)
       .toFixed(2);
   };
 
   return (
     <div className='shopping-cart'>
-      {cartItems.map(item => (
-        <Item key={item.id} {...item} removeItem={removeItem} updateItemQuantity={updateItemQuantity} />
+      {cart.map(item => (
+        <Item key={item.id} {...item} removeItem={() => {}} updateItemQuantity={() => {}} />
       ))}
 
       <div className='shopping-cart__checkout'>
-        <p>Total: ${cartTotal()}</p>
+        <p>Total: ${getCartTotal()}</p>
         <button>Checkout</button>
       </div>
     </div>
