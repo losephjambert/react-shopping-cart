@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import data from './data';
 
@@ -14,6 +14,23 @@ import CartContext from './contexts/CartContext';
 function App() {
   const [products] = useState(data);
   const [cart, setCart] = useState([]);
+  useEffect(() => {
+    setCart(() => {
+      return cart.reduce((products, currentProduct) => {
+        products = products || [];
+        const product = products.find(p => p.id === currentProduct.id);
+        if (product) {
+          product.quantity = product.quantity ? (product.quantity += 1) : 1;
+          const filteredProducts = products.filter(p => p.id !== currentProduct.id);
+          products = [...filteredProducts, product];
+        } else {
+          currentProduct.quantity = 1;
+          products = [...products, currentProduct];
+        }
+        return products;
+      }, []);
+    });
+  }, [cart]);
 
   const addItem = item => {
     // add the given item to the cart
