@@ -7,36 +7,56 @@ import Navigation from './components/Navigation';
 import Products from './components/Products';
 import ShoppingCart from './components/ShoppingCart';
 
+// Contexts
+import ProductContext from './contexts/ProductContext';
+import CartContext from './contexts/CartContext';
+
+// Hooks
+import { useLocalStorage } from './hooks/useLocalStorage';
+
 function App() {
-	const [products] = useState(data);
-	const [cart, setCart] = useState([]);
+  const [products] = useState(data);
+  const [cart, setCart] = useLocalStorage('cart', []);
 
-	const addItem = item => {
-		// add the given item to the cart
-	};
+  const addItem = item => {
+    // add the given item to the cart
+    item = cart.find(p => p.id === item.id) || item;
+    item.quantity ? (item.quantity += 1) : (item.quantity = 1);
+    setCart([...cart.filter(c => c.id !== item.id), item]);
+  };
 
-	return (
-		<div className="App">
-			<Navigation cart={cart} />
+  // const removeItem = id => {
+  //   setCartItems([...cartItems.filter(c => c.id !== id)]);
+  // };
 
-			{/* Routes */}
-			<Route
-				exact
-				path="/"
-				render={() => (
-					<Products
-						products={products}
-						addItem={addItem}
-					/>
-				)}
-			/>
+  // const updateItemQuantity = (id, quantity) => {
+  //   if (quantity < 1) {
+  //     setCartItems([...cartItems.filter(c => c.id !== id)]);
+  //     return;
+  //   }
+  //   const clonedCartItems = [...cartItems];
+  //   let index;
+  //   clonedCartItems.find((c, i) => {
+  //     if (id === c.id) index = i;
+  //     return false;
+  //   });
 
-			<Route
-				path="/cart"
-				render={() => <ShoppingCart cart={cart} />}
-			/>
-		</div>
-	);
+  //   clonedCartItems[index]["quantity"] = quantity;
+  //   setCartItems(clonedCartItems);
+  // };
+
+  return (
+    <div className='App'>
+      <ProductContext.Provider value={{ products, addItem }}>
+        <CartContext.Provider value={{ cart }}>
+          <Navigation />
+          {/* Routes */}
+          <Route exact path='/' component={Products} />
+          <Route path='/cart' component={ShoppingCart} />
+        </CartContext.Provider>
+      </ProductContext.Provider>
+    </div>
+  );
 }
 
 export default App;
